@@ -14,11 +14,14 @@ class recap_jury_API:
     
     
     
-    def __init__(self,annee,but,data,dict_etudiants):
+    def __init__(self,annee,but,data,fichier_etudiants):
         self.annee=annee
         self.but=but
         self.data = data
-        self.dict_etudiants = dict_etudiants
+        self.fichier_etudiants = fichier_etudiants
+        self.dict_etudiants_code_nip_nom ={}
+        for etudiant in self.fichier_etudiants:
+            self.dict_etudiants_code_nip_nom[etudiant['code_nip']]=etudiant['sort_key']   
         if but==3:
             self.nbUEs=3
         else:
@@ -38,18 +41,40 @@ class recap_jury_API:
         for etudiant in range(len(self.data)):
             resultEtudiant=[]
             code_etudiant=self.data[etudiant]['code_nip']
-            print(code_etudiant)
-            if code_etudiant in self.dict_etudiants:
-                nom_etudiant = self.dict_etudiants[code_etudiant].split(';')[0]
-                prenom_etudiant = self.dict_etudiants[code_etudiant].split(';')[1]
-            resultEtudiant.append(self.data[etudiant]['code_nip'])
-            resultEtudiant.append(nom_etudiant)
-            resultEtudiant.append(prenom_etudiant)
-            nbRcues = 0
-            for j in range(self.nbUEs):
-                if self.data[etudiant]['rcues'][j]['moy'] >= 10:
-                    nbRcues = nbRcues + 1
-                resultEtudiant.append(round(self.data[etudiant]['rcues'][j]['moy'],2))
+            if code_etudiant in self.dict_etudiants_code_nip_nom:
+                nom_etudiant = self.dict_etudiants_code_nip_nom[code_etudiant].split(';')[0]
+                prenom_etudiant = self.dict_etudiants_code_nip_nom[code_etudiant].split(';')[1]
+                resultEtudiant.append(self.data[etudiant]['code_nip'])
+                resultEtudiant.append(nom_etudiant)
+                resultEtudiant.append(prenom_etudiant)
+                nbRcues = 0
+                for j in range(self.nbUEs):
+                    if self.data[etudiant]['rcues'][j]['moy'] >= 10:
+                        nbRcues = nbRcues + 1
+                    resultEtudiant.append(round(self.data[etudiant]['rcues'][j]['moy'],2))
             #resultEtudiant.append(nbRcues)
-            self.tabRCUEs[nbRcues].append(resultEtudiant)
+                self.tabRCUEs[nbRcues].append(resultEtudiant)
         return self.tabRCUEs   
+
+    def repartition_homme_femme(self):
+        dict={"M":[],"F":[]}
+        for etudiant in self.fichier_etudiants:
+            if etudiant['civilite'] == 'M':
+                dict['M'].append(etudiant['nom'])
+            else:
+                dict['F'].append(etudiant['nom'])
+        return dict
+    
+    def repartition_bacs(self):
+        dict = {"gene":[],"Techno":[],"Autre":[]}
+        for etudiant in self.fichier_etudiants:
+            if etudiant["admission"]["bac"] in ["S","Général", "Géné(RéoL1,L2)","L","G\u00c9N\u00c9","GENE(REOR L1)"]:
+                dict["gene"].append(etudiant['nom'])
+            elif etudiant["admission"]["bac"] == "STMG" or etudiant["admission"]["bac"] == "STI2D":
+                dict['Techno'].append(etudiant['nom'])
+            else:
+                dict['Autre'].append(etudiant['nom'])
+        return dict
+            
+    
+  

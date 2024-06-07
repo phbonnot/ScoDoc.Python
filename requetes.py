@@ -34,4 +34,7 @@ renvoie
 2022-09-01   2023-01-28   BUT Informatique semestre 3   21   INFORMATIQUE-BUT-FI-S3-2022"""
 
 def etudiantsCourants():
-    return "Informatique/api/etudiants/courants"
+    return "Informatique/api/etudiants/courants/long"
+
+def etudiantsInscritsDans(formsemestre_id):
+    return "Informatique/api/formsemestre/"+str(formsemestre_id)+"/etudiants/long"

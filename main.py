@@ -45,27 +45,7 @@ header = {"Authorization" : "Bearer " + token}
 
 annee=2022
 
-requeteEtudiant = requetes.etudiantsCourants()
-
-response = requests.get(config['server']['Base_Url']+ requeteEtudiant, headers = header, verify = False)
-
-if not response:
-    print("Erreur : La chaîne JSON est vide.")
-else:
-    try:
-        data = json.loads(response.content)
-        dict_etudiants_code_nip_nom ={}
-        for etudiant in data:
-            dict_etudiants_code_nip_nom[etudiant['code_nip']]=etudiant['sort_key']           
-    except json.JSONDecodeError as e:
-        print(f"Erreur de décodage JSON : {e}")
-
 requete = requetes.formsemestresAnnee(annee)
-#"Informatique/api/formsemestres/query?annee_scolaire=2023"
-#liste des ids des formations du département Info "Informatique/api/formations_ids
-#liste des formations du département Info "Informatique/api/formations"
-#fiche d'un étudiant donné avec son nip "Informatique/api/etudiant/nip/23006231"
-#liste des étudiants du département"Informatique/api/etudiants/courants" 
 
 response = requests.get(config['server']['Base_Url']+ requete, headers = header, verify = False)
 #data = json.loads(response.content)
@@ -90,15 +70,18 @@ else:
             print("i : ",i)
             requete2 = requetes.decisionJury(data_sem_pair_ids[i])
             response2 = requests.get(config['server']['Base_Url']+ requete2, headers = header, verify = False)
-            if not response2:
+            requeteEtudiant = requetes.etudiantsInscritsDans(data_sem_pair_ids[i])
+            response3 = requests.get(config['server']['Base_Url']+ requeteEtudiant, headers = header, verify = False)
+            if not response2 or not response3:
                 print("Erreur : La chaîne JSON est vide.")
             else:
                 try:
                     data2 = json.loads(response2.content)
-                    recap_jury = recap_jury_API(annee,(i+1),data2,dict_etudiants_code_nip_nom)
-                    compteRendu = documentLatex("année 2022 BUT"+str(i+1))
-                    compteRendu.compte_rendu_jury(recap_jury.tableauValidationRCUEs())
-                    
+                    fichier_etudiants = json.loads(response3.content)
+                    recap_jury = recap_jury_API(annee,(i+1),data2,fichier_etudiants)
+                    #compteRendu = documentLatex("année 2022 BUT"+str(i+1))
+                    #compteRendu.compte_rendu_jury(recap_jury.tableauValidationRCUEs())
+                    print(json.dumps(recap_jury.repartition_bacs()))
                 except json.JSONDecodeError as er:
                     print(f"Erreur de décodage JSON : {er}")
     except json.JSONDecodeError as e:

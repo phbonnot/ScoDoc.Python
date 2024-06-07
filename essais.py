@@ -26,7 +26,7 @@ header = {"Authorization" : "Bearer " + token}
 
 annee=2022
 
-requete = requetes.etudiantsCourants()
+requete = requetes.etudiantsInscritsDans(21)
 
 response = requests.get(config['server']['Base_Url']+ requete, headers = header, verify = False)
 
@@ -35,11 +35,9 @@ if not response:
 else:
     try:
         data = json.loads(response.content)
-        dict_etudiants_code_nip_nom ={}
-        for etudiant in data:
-            dict_etudiants_code_nip_nom[etudiant['code_nip']]=etudiant['sort_key']           
+        print(json.dumps(data,indent=4)) 
     except json.JSONDecodeError as e:
         print(f"Erreur de décodage JSON : {e}")
 
-for etudiant_key in dict_etudiants_code_nip_nom:
-    print (dict_etudiants_code_nip_nom[etudiant_key].split(';')[0])
+
+
