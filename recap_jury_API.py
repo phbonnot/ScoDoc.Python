@@ -21,19 +21,28 @@ class recap_jury_API:
         self.fichier_etudiants = fichier_etudiants#la liste des étudiants inscrits dans l'année
         #self.renseignements_etudiants = renseignements_etudiants#code_nip, nom,prénom,sexe,type_bac et année du bac
         self.dict_etudiants_code_nip_nom ={}
+        self.ues_suivies_parcours=[[1,2,6],[4,5,6]]
+
         for etudiant in self.fichier_etudiants:
             self.dict_etudiants_code_nip_nom[etudiant['code_nip']]=etudiant['sort_key']   
-        if but==3:
+        """if but==3:
             self.nbUEs=3
         else:
-            self.nbUEs=6
+            self.nbUEs=6"""
+        self.nbUEs = 6
         self.tab_stats = np.zeros((5,7))
         self.longueurTab_stats = 5
         self.types_de_bac_gene = ["S","Général","Géné(RéoL1,L2)","G\u00c9N\u00c9","GENE(REOR L1)"]
         self.dict_types_de_bac = {"géné":[],"techno":[],"autre":[]}
         self.tab_admis=[]
+       
         
         
+    def index_de(self,n,tab):
+        for i,x in enumerate(tab):
+            if x==n:
+                return i
+            
     def afficher_data(self):
         print(json.dumps(self.data,indent=4))
         
@@ -44,6 +53,19 @@ class recap_jury_API:
             
         for ind_etudiant,etudiant in enumerate(self.data_decisions):
             resultEtudiant=[]
+            if self.but in [1,2]:
+                ues_suivies = [1,2,3,4,5,6]
+            else:
+                if "parcours" in etudiant.keys():
+                    if etudiant["parcours"]=="A":
+                        ues_suivies = self.ues_suivies_parcours[0]
+                    elif etudiant['parcours']=="C":
+                        ues_suivies = self.ues_suivies_parcours[1]
+                    else:
+                        ues_suivies = [1,2,3,4,5,6]
+                else:
+                    ues_suivies = [1,2,3,4,5,6]
+            
             code_etudiant=self.data_decisions[ind_etudiant]['code_nip']
             if code_etudiant in self.dict_etudiants_code_nip_nom:
                 nom_etudiant = self.dict_etudiants_code_nip_nom[code_etudiant].split(';')[0]
@@ -53,14 +75,20 @@ class recap_jury_API:
                 resultEtudiant.append(prenom_etudiant)
                 nbRcues = 0
                 nbRcues_entre_huit_et_dix =0
-                for j in range(self.nbUEs):#on parcourt toutes les ues
-                    if self.data_decisions[ind_etudiant]['rcues'][j]['moy'] >= 10:
-                        nbRcues = nbRcues + 1
-                    elif self.data_decisions[ind_etudiant]['rcues'][j]['moy'] >= 8:
-                        nbRcues_entre_huit_et_dix = nbRcues_entre_huit_et_dix +1
-                    resultEtudiant.append(round(self.data_decisions[ind_etudiant]['rcues'][j]['moy'],2))
+                for index in range(self.nbUEs):
+                    j=index+1
+                    if j in ues_suivies:
+                        moyenne = self.data_decisions[ind_etudiant]['rcues'][self.index_de(j,ues_suivies)]['moy']
+                        if moyenne >= 10:
+                            nbRcues = nbRcues + 1
+                        elif moyenne >= 8:
+                            nbRcues_entre_huit_et_dix = nbRcues_entre_huit_et_dix +1
+                        resultEtudiant.append(round(moyenne,2))
+                    else:
+                        resultEtudiant.append("-")
+                    
                 tabRCUEs[nbRcues].append(resultEtudiant)
-                if (nbRcues + nbRcues_entre_huit_et_dix) == self.nbUEs:
+                if (nbRcues + nbRcues_entre_huit_et_dix) == len(ues_suivies):
                     self.tab_admis.append(resultEtudiant)
                     etudiant["ADM"]=True
                 else:
