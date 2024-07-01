@@ -18,7 +18,7 @@ class documentLatex:
         self.document = Document(titre,geometry_options=self.geometry_options)
         self.document.add_color("bleu", "RGB","84,201,227")
         self.document.add_color("vert", "RGB", "154,255,150")
-        self.document.add_color("jaune", "RGB", "descriptio255,234,150")
+        self.document.add_color("jaune", "RGB", "255,234,150")
         if titre == "1":
             self.color = "jaune"
         elif titre == "2":
