@@ -12,29 +12,30 @@ import requetes
 from recap_jury_API import recap_jury_API
 from documentLatex import documentLatex
 from connexion_API import connexion_API
+from Resultats import Resultats
+from documentCsv import documentCsv
 
 
-"""permet de retrouver la liste des ids de tous les semetres de l'année
-à insérer en paramètre dans la requête concernant la décision de jury"""
-"""def formsemestres_ids(data):
-    ids=[]
-    for i in range(len(data)):
-        ids.append(data[i]["formsemestre_id"])
-    return ids"""
 def formsemestres_ids(data):
     ids=[]
-    for sem in data:
+    for i,sem in data:
         ids.append(sem["formsemestre_id"])
     return ids
 
 def id_semestre_pair(data):
     ids_sem_pair=[]
     for sem in data:
-        
-        if sem['annee_scolaire']==annee and sem['session_id'].split('-')[3][1] in [str(2),str(4),str(6)]:
+        if sem['annee_scolaire'] == annee and sem['session_id'].split('-')[3][1] in [str(2),str(4),str(6)]:
             ids_sem_pair.append(sem)
     return ids_sem_pair
 
+def id_semestre_impair(data):
+    ids_sem_impair=[]
+    for sem in data:
+        
+        if sem['annee_scolaire'] == annee and sem['session_id'].split('-')[3][1] in [str(1),str(3),str(5)]:
+            ids_sem_impair.append(sem)
+    return ids_sem_impair
 
 connexion = connexion_API()
 
@@ -51,7 +52,6 @@ if not response:
 else:
     try:
         data = json.loads(response.content)
-        
         data_sem_pair=id_semestre_pair(data)
         
         data_sem_pair_ids = []
@@ -60,8 +60,7 @@ else:
             print(sem_pair['formsemestre_id'])
             print(sem_pair['annee_scolaire'])
             print(sem_pair['session_id'])
-        #nb_comptes_rendus = len(data_sem_pair_ids)
-        #for i in range(nb_comptes_rendus):
+       
             compte_rendu =int(int(sem_pair['session_id'].split('-')[3][1])/2)
             print("compte-rendu : ",compte_rendu)
             requete_decision = requetes.decisionJury(sem_pair['id'])
@@ -87,10 +86,12 @@ else:
                                 if len(etudiant['groups'])>0:
                                     parcours = etudiant['groups'][0]['group_name']
                                     etudiant_2["parcours"]=parcours
-                    print(json.dumps(data_decision,indent=4))
-                    recap_jury = recap_jury_API(annee,compte_rendu,data_decision,fichier_etudiants)
+                    """recap_jury = recap_jury_API(annee,compte_rendu,data_decision,fichier_etudiants)
                     document = documentLatex("BUT "+str(compte_rendu))
-                    document.compte_rendu_jury( recap_jury.tableauValidationRCUEs())
+                    document.compte_rendu_jury(recap_jury.tableauValidationRCUEs())"""
+                    resultats = Resultats(annee,compte_rendu,data_decision,fichier_etudiants)
+                    document_csv = documentCsv("BUT "+str(compte_rendu))
+                    document_csv.generer_csv(resultats.resultats())
                     #print(recap_jury.tableau_stats())
                 except json.JSONDecodeError as er:
                     print(f"Erreur de décodage JSON : {er}")
