@@ -39,8 +39,27 @@ class Resultats:
 
     
     def resultats(self):
-                    
-        return self.data_decisions   
+        infos=[]
+        for etudiant in self.data_decisions:
+    
+            infos_etudiant = []
+            infos_etudiant.append(etudiant['code_nip'])
+            infos_etudiant.append(etudiant['nom'])
+            infos_etudiant.append(etudiant['prenom'])
+            infos_etudiant.append(etudiant['bac'])
+            infos_etudiant.append(etudiant['parcours'])
+            for i in range(len(etudiant['rcues'])):
+                ue_1=etudiant['rcues'][i]['ue_1']['moy']
+                ue_2=etudiant['rcues'][i]['ue_2']['moy']
+                if ue_1 is None or ue_2 is None:
+                    infos_etudiant.append(ue_1)
+                    infos_etudiant.append(ue_2)
+                else:
+                    infos_etudiant.append(round(etudiant['rcues'][i]['ue_1']['moy'],2))
+                    infos_etudiant.append(round(etudiant['rcues'][i]['ue_2']['moy'],2))
+                infos_etudiant.append(etudiant['rcues'][i]['code'])
+            infos.append(infos_etudiant)    
+        return infos
                 
                 
                 

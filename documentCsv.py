@@ -21,14 +21,7 @@ class documentCsv:
         with open(self.titre+'.csv', 'w', newline='') as csvfile:
             file_writer = csv.writer(csvfile, delimiter=';',quotechar='"')
             for etudiant in data:
-                ligne = etudiant['code_nip']+","+etudiant['nom']+","+etudiant['prenom']+","+\
-                    etudiant['bac']
-                for rcue in etudiant['rcues']:
-                    for ue in rcue[0]:
-                        print(ue['ue_1'])
-                        
-                        
-                file_writer.writerow(ligne)
+                file_writer.writerow(etudiant)
             #file_writer.writerow(['Spam'] * 5 + ['Baked Beans'])
             #file_writer.writerow(['Spam', 'Lovely Spam', 'Wonderful Spam'])"""
             
