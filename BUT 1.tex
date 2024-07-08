@@ -6,22 +6,52 @@
 \usepackage{lastpage}%
 \usepackage{geometry}%
 \geometry{head=40pt,margin=0.5in,bottom=0.6in}%
+\usepackage{color}%
+\usepackage[table]{xcolor}%
+\usepackage{fancyhdr}%
+\usepackage{ragged2e}%
+\usepackage{graphicx}%
 %
-%
+\definecolor{bleu}{RGB}{84,201,227}%
+\definecolor{vert}{RGB}{154,255,150}%
+\definecolor{jaune}{RGB}{255,234,150}%
+\fancypagestyle{header}{%
+\renewcommand{\headrulewidth}{0pt}%
+\renewcommand{\footrulewidth}{0pt}%
+\fancyhead{%
+}%
+\fancyfoot{%
+}%
+\fancyhead[L]{%
+\begin{minipage}[c]{0.49\textwidth}%
+\includegraphics[width=80px]{Logo_iut.png}%
+\end{minipage}%
+}%
+\fancyhead[C]{%
+\begin{minipage}{0.6\textwidth}%
+\centering%
+\begin{Large}%
+Récapitulatif du jury : BUT 1%
+\end{Large}%
+\end{minipage}%
+}%
+}%
 %
 \begin{document}%
 \normalsize%
+\pagestyle{header}%
 \section{40 étudiants ont validé 6 compétences}%
 \label{sec:40tudiantsontvalid6comptences}%
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|}%
 \hline%
+\rowcolor{bleu}%
 code\_nip&nom&prénom&comp 1&comp 2&comp 3&comp 4&comp 5&comp 6\\%
 \hline%
 22010273&el khadraoui&oumaima&12.07&12.61&15.75&13.88&14.72&15.07\\%
 \hline%
 22005106&vignon&gabriel&13.37&11.41&12.83&13.97&11.81&12.56\\%
 \hline%
-22008669&ajinca&tayrell&13.9&11.76&11.84&10.11&11.63&12.31\\%
+22008669&ajinca&tayrell&13.9&11.76&11.88&10.16&11.68&12.42\\%
 \hline%
 22005487&khan&zul{-}ker{-}naine&13.17&12.29&15.02&12.34&14.13&14.65\\%
 \hline%
@@ -57,7 +87,7 @@ code\_nip&nom&prénom&comp 1&comp 2&comp 3&comp 4&comp 5&comp 6\\%
 \hline%
 23003675&dos santos neves&simao&12.92&12.1&13.28&12.79&13.36&15.24\\%
 \hline%
-23007031&el fayez&nezha&12.8&11.53&14.65&13.5&14.59&15.09\\%
+23007031&el fayez&nezha&12.8&11.53&14.7&13.55&14.64&15.23\\%
 \hline%
 23007659&fellah&ariles&15.28&13.68&14.18&12.96&13.94&15.54\\%
 \hline%
@@ -104,6 +134,7 @@ code\_nip&nom&prénom&comp 1&comp 2&comp 3&comp 4&comp 5&comp 6\\%
 \label{sec:12tudiantsontvalid5comptences}%
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|}%
 \hline%
+\rowcolor{bleu}%
 code\_nip&nom&prénom&comp 1&comp 2&comp 3&comp 4&comp 5&comp 6\\%
 \hline%
 23007644&ben salem&ousama&10.01&9.8&10.59&11.01&11.63&11.91\\%
@@ -137,6 +168,7 @@ code\_nip&nom&prénom&comp 1&comp 2&comp 3&comp 4&comp 5&comp 6\\%
 \label{sec:10tudiantsontvalid4comptences}%
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|}%
 \hline%
+\rowcolor{bleu}%
 code\_nip&nom&prénom&comp 1&comp 2&comp 3&comp 4&comp 5&comp 6\\%
 \hline%
 23002186&alouane&masinisa&5.2&6.46&10.11&10.14&11.12&12.28\\%
@@ -166,6 +198,7 @@ code\_nip&nom&prénom&comp 1&comp 2&comp 3&comp 4&comp 5&comp 6\\%
 \label{sec:5tudiantsontvalid3comptences}%
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|}%
 \hline%
+\rowcolor{bleu}%
 code\_nip&nom&prénom&comp 1&comp 2&comp 3&comp 4&comp 5&comp 6\\%
 \hline%
 23006000&bosse&enzo&6.55&7.03&9.18&10.28&11.62&13.22\\%
@@ -185,6 +218,7 @@ code\_nip&nom&prénom&comp 1&comp 2&comp 3&comp 4&comp 5&comp 6\\%
 \label{sec:5tudiantsontvalid2comptences}%
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|}%
 \hline%
+\rowcolor{bleu}%
 code\_nip&nom&prénom&comp 1&comp 2&comp 3&comp 4&comp 5&comp 6\\%
 \hline%
 23001272&ba&sylleman&5.45&5.16&8.6&7.35&11.68&12.29\\%
@@ -204,6 +238,7 @@ code\_nip&nom&prénom&comp 1&comp 2&comp 3&comp 4&comp 5&comp 6\\%
 \label{sec:3tudiantsontvalid1comptence}%
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|}%
 \hline%
+\rowcolor{bleu}%
 code\_nip&nom&prénom&comp 1&comp 2&comp 3&comp 4&comp 5&comp 6\\%
 \hline%
 23001077&ayim&david&5.51&6.33&10.58&8.66&8.72&8.91\\%
@@ -219,6 +254,7 @@ code\_nip&nom&prénom&comp 1&comp 2&comp 3&comp 4&comp 5&comp 6\\%
 \label{sec:21tudiantsnontvalidaucunecomptence}%
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|}%
 \hline%
+\rowcolor{bleu}%
 code\_nip&nom&prénom&comp 1&comp 2&comp 3&comp 4&comp 5&comp 6\\%
 \hline%
 23001208&amato boitard&uriel&5.99&5.22&6.51&5.07&5.88&6.84\\%
@@ -255,7 +291,7 @@ code\_nip&nom&prénom&comp 1&comp 2&comp 3&comp 4&comp 5&comp 6\\%
 \hline%
 23009810&bolaky{-}meite&naim&0.0&0.0&0.24&0.24&0.24&0.68\\%
 \hline%
-None&siby&fatimata&0.97&1.35&2.56&2.72&6.66&6.73\\%
+23013292&siby&fatimata&0.97&1.35&2.56&2.72&6.66&6.73\\%
 \hline%
 23011461&passe{-}coutrin&lyam&2.91&2.2&4.46&5.59&6.48&7.54\\%
 \hline%

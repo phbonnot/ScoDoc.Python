@@ -22,7 +22,6 @@ class recap_jury_API:
         #self.renseignements_etudiants = renseignements_etudiants#code_nip, nom,prénom,sexe,type_bac et année du bac
         self.dict_etudiants_code_nip_nom ={}
         self.ues_suivies_parcours=[[1,2,6],[4,5,6]]
-
         for etudiant in self.fichier_etudiants:
             self.dict_etudiants_code_nip_nom[etudiant['code_nip']]=etudiant['sort_key']   
         """if but==3:
@@ -35,16 +34,15 @@ class recap_jury_API:
         self.types_de_bac_gene = ["S","Général","Géné(RéoL1,L2)","G\u00c9N\u00c9","GENE(REOR L1)"]
         self.dict_types_de_bac = {"géné":[],"techno":[],"autre":[]}
         self.tab_admis=[]
-       
         
         
+    def afficher_data(self):
+        print(json.dumps(self.data,indent=4))
+    
     def index_de(self,n,tab):
         for i,x in enumerate(tab):
             if x==n:
                 return i
-            
-    def afficher_data(self):
-        print(json.dumps(self.data,indent=4))
         
     def tableauValidationRCUEs(self):
         tabRCUEs = []
@@ -68,11 +66,12 @@ class recap_jury_API:
             
             code_etudiant=self.data_decisions[ind_etudiant]['code_nip']
             if code_etudiant in self.dict_etudiants_code_nip_nom:
-                nom_etudiant = self.dict_etudiants_code_nip_nom[code_etudiant].split(';')[0]
+                nom_etudiant = self.dict_etudiants_code_nip_nom[code_etudiant].split(';')[0][:15].capitalize()
                 prenom_etudiant = self.dict_etudiants_code_nip_nom[code_etudiant].split(';')[1]
                 resultEtudiant.append(self.data_decisions[ind_etudiant]['code_nip'])
                 resultEtudiant.append(nom_etudiant)
                 resultEtudiant.append(prenom_etudiant)
+                resultEtudiant.append(etudiant['bac'])
                 nbRcues = 0
                 nbRcues_entre_huit_et_dix =0
                 for index in range(self.nbUEs):

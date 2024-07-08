@@ -5,37 +5,54 @@ Created on Tue Jun  4 11:56:41 2024
 
 @author: philippebonnot
 """
-import configparser
+from connexion_API import connexion_API
+import requetes
 import requests
 import json
-import requetes
 
-"""On se connecte"""
-config = configparser.ConfigParser()
-print("lecture de la configuration")
-config.read('config.ini')
+def formsemestres_ids(data):
+    ids=[]
+    for i,sem in data:
+        ids.append(sem["formsemestre_id"])
+    return ids
 
-print("Récupération du token auprès de {config['server']['Base_Url']}")
-print(f"login : {config['credentials']['login']}")
+def id_semestre_pair(data):
+    ids_sem_pair=[]
+    for i in range(len(data)):
+        
+        if data[i]['session_id'].split('-')[3][1] in [str(2),str(4),str(6)]:
+            ids_sem_pair.append(data[i])
+    return ids_sem_pair
 
-response = requests.post(config['server']['Base_Url']+"api/tokens", auth = (config['credentials']['login'],config['credentials']['password']), verify = False)
-                                                                                                                
-token = response.json()['token']
-print("token : ",token)
-header = {"Authorization" : "Bearer " + token}
+connexion = connexion_API()
 
-annee=2022
+annee = 2022
+requete = requetes.formsemestresAnnee(annee)
 
-requete = requetes.etudiantsInscritsDans(21)
 
-response = requests.get(config['server']['Base_Url']+ requete, headers = header, verify = False)
+response = requests.get(connexion.get_config()['server']['Base_Url']+ requete, headers = connexion.get_header(), verify = False)
 
 if not response:
     print("Erreur : La chaîne JSON est vide.")
 else:
     try:
         data = json.loads(response.content)
-        print(json.dumps(data,indent=4)) 
+        data_sem_pair=id_semestre_pair(data)
+        
+        data_sem_pair_ids = []
+        for i in range(len(data_sem_pair)):
+            data_sem_pair_ids.append(data_sem_pair[i]['formsemestre_id'])
+    
+        nb_comptes_rendus = len(data_sem_pair_ids)
+        print(nb_comptes_rendus)
+        for i in range(nb_comptes_rendus):
+            print("i : ",i)
+            requete_decision = requetes.decisionJury(data_sem_pair_ids[i])
+            response_decision = requests.get(connexion.get_config()['server']['Base_Url']+ requete_decision, headers = connexion.get_header(), verify = False)
+            data_decisions = json.loads(response_decision.content)
+            #requete_etudiant = requetes.etudiantsInscritsDans(data_sem_pair_ids[i])
+            #response_etudiant = requests.get(connexion.get_config()['server']['Base_Url']+ requete_etudiant, headers = connexion.get_header(), verify = False)
+            print(json.dumps(data_decisions,indent=4))
     except json.JSONDecodeError as e:
         print(f"Erreur de décodage JSON : {e}")
 

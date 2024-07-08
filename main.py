@@ -12,8 +12,6 @@ import requetes
 from recap_jury_API import recap_jury_API
 from documentLatex import documentLatex
 from connexion_API import connexion_API
-from Resultats import Resultats
-from documentCsv import documentCsv
 
 
 def formsemestres_ids(data):
@@ -25,23 +23,15 @@ def formsemestres_ids(data):
 def id_semestre_pair(data):
     ids_sem_pair=[]
     for sem in data:
+        
         if sem['annee_scolaire'] == annee and sem['session_id'].split('-')[3][1] in [str(2),str(4),str(6)]:
             ids_sem_pair.append(sem)
     return ids_sem_pair
 
-def id_semestre_impair(data):
-    ids_sem_impair=[]
-    for sem in data:
-        
-        if sem['annee_scolaire'] == annee and sem['session_id'].split('-')[3][1] in [str(1),str(3),str(5)]:
-            ids_sem_impair.append(sem)
-    return ids_sem_impair
 
 connexion = connexion_API()
 
 annee=2023
-
-
 
 requete = requetes.formsemestresAnnee(annee)
 
@@ -74,6 +64,7 @@ else:
                 try:
                     data_decision = json.loads(response_decision.content)
                     fichier_etudiants = json.loads(response_etudiant.content)
+                    
                     for etudiant in fichier_etudiants:
                         code_nip = etudiant["code_nip"]
                         for etudiant_2 in data_decision:
@@ -86,13 +77,10 @@ else:
                                 if len(etudiant['groups'])>0:
                                     parcours = etudiant['groups'][0]['group_name']
                                     etudiant_2["parcours"]=parcours
-                    """recap_jury = recap_jury_API(annee,compte_rendu,data_decision,fichier_etudiants)
+                    recap_jury = recap_jury_API(annee,compte_rendu,data_decision,fichier_etudiants)
                     document = documentLatex("BUT "+str(compte_rendu))
-                    document.compte_rendu_jury(recap_jury.tableauValidationRCUEs())"""
-                    resultats = Resultats(annee,compte_rendu,data_decision,fichier_etudiants)
-                    document_csv = documentCsv("BUT "+str(compte_rendu))
-                    document_csv.generer_csv(resultats.resultats())
-                    #print(recap_jury.tableau_stats())
+                    document.compte_rendu_jury(recap_jury.tableauValidationRCUEs())
+                    print(recap_jury.tableau_stats())
                 except json.JSONDecodeError as er:
                     print(f"Erreur de décodage JSON : {er}")
     except json.JSONDecodeError as e:
